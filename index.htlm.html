@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đề Kiểm Tra 20 Phút - Vật Lí 7: Âm Thanh & Sóng Âm</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --success: #16a34a;
+            --success-bg: #dcfce7;
+            --danger: #dc2626;
+            --danger-bg: #fee2e2;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding-bottom: 60px;
+        }
+
+        /* Header cố định */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            padding: 15px 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .header-title h1 {
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        .header-title p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .timer-box {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: var(--primary);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .timer-box.warning {
+            background: var(--danger-bg);
+            border-color: #fecaca;
+            color: var(--danger);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Container chính */
+        .container {
+            max-width: 850px;
+            margin: 25px auto;
+            padding: 0 15px;
+        }
+
+        /* Thông tin học sinh */
+        .student-info {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            margin-bottom: 25px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        /* Phần câu hỏi */
+        .section-title {
+            background: var(--primary);
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin: 30px 0 15px 0;
+        }
+
+        .question-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: border-color 0.2s;
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+
+        .q-num {
+            color: var(--primary);
+            margin-right: 4px;
+        }
+
+        /* Lựa chọn trắc nghiệm & Đúng/Sai */
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .option-label:hover {
+            background: #f1f5f9;
+        }
+
+        .option-label input[type="radio"] {
+            margin-top: 4px;
+            accent-color: var(--primary);
+            transform: scale(1.1);
+        }
+
+        .tf-options {
+            flex-direction: row;
+            gap: 15px;
+        }
+
+        .tf-options .option-label {
+            flex: 1;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        /* Ô trả lời ngắn */
+        .short-answer-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        textarea.short-answer-input {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* Trạng thái sau khi chấm điểm */
+        .question-card.correct {
+            border-color: var(--success);
+            background-color: #f0fdf4;
+        }
+
+        .question-card.incorrect {
+            border-color: var(--danger);
+            background-color: #fef2f2;
+        }
+
+        .feedback {
+            margin-top: 12px;
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 0.92rem;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.ok {
+            background: var(--success-bg);
+            color: var(--success);
+        }
+
+        .feedback.err {
+            background: var(--danger-bg);
+            color: var(--danger);
+        }
+
+        /* Nút nộp bài */
+        .submit-area {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .btn-submit {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 36px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+            transition: background 0.2s;
+        }
+
+        .btn-submit:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-submit:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        /* Bảng kết quả */
+        #result-panel {
+            display: none;
+            background: var(--bg-card);
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .score-display {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 10px 0;
+        }
+
+        .score-detail {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 600px) {
+            .student-info {
+                grid-template-columns: 1fr;
+            }
+            .tf-options {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-title">
+        <h1>KIỂM TRA 20 PHÚT – VẬT LÍ 7</h1>
+        <p>Chủ đề: Âm thanh & Sóng âm</p>
+    </div>
+    <div class="timer-box" id="timer-box">
+        <span>⏱ Thời gian:</span>
+        <span id="time-display">20:00</span>
+    </div>
+</header>
+
+<div class="container">
+    <!-- Bảng kết quả (hiện khi nộp bài) -->
+    <div id="result-panel">
+        <h2>KẾT QUẢ BÀI LÀM</h2>
+        <p id="student-result-info" style="margin-top: 5px; font-weight: 600;"></p>
+        <div class="score-display" id="total-score">0.0 / 10 điểm</div>
+        <p class="score-detail" id="score-breakdown"></p>
+    </div>
+
+    <!-- Thông tin học sinh -->
+    <div class="student-info">
+        <div class="input-group">
+            <label for="student-name">Họ và tên học sinh:</label>
+            <input type="text" id="student-name" placeholder="Nhập họ và tên...">
+        </div>
+        <div class="input-group">
+            <label for="student-class">Lớp:</label>
+            <input type="text" id="student-class" placeholder="Ví dụ: 7A1">
+        </div>
+    </div>
+
+    <form id="quiz-form">
+        <!-- PHẦN I -->
+        <div class="section-title">PHẦN I. TRẮC NGHIỆM KHÁCH QUAN (5,0 điểm – 0,5đ/câu)</div>
+        <div id="part1-container"></div>
+
+        <!-- PHẦN II -->
+        <div class="section-title">PHẦN II. CÂU HỎI ĐÚNG / SAI (3,0 điểm – 0,75đ/câu)</div>
+        <div id="part2-container"></div>
+
+        <!-- PHẦN III -->
+        <div class="section-title">PHẦN III. CÂU HỎI TRẢ LỜI NGẮN (2,0 điểm – 1,0đ/câu)</div>
+
+        <!-- Câu 15 -->
+        <div class="question-card" id="card-q15">
+            <div class="question-text"><span class="q-num">Câu 15:</span> Một con lắc thực hiện được 120 dao động trong thời gian 30 giây. Hãy tính tần số dao động của con lắc này (đơn vị: Hz).</div>
+            <input type="number" step="any" class="short-answer-input" id="q15-input" placeholder="Nhập giá trị số (Ví dụ: 10)...">
+            <div class="feedback" id="fb-q15"></div>
+        </div>
+
+        <!-- Câu 16 -->
+        <div class="question-card" id="card-q16">
+            <div class="question-text"><span class="q-num">Câu 16:</span> Nêu <strong>2 biện pháp</strong> thiết thực để chống ô nhiễm tiếng ồn trong đời sống hằng ngày.</div>
+            <textarea class="short-answer-input" id="q16-input" placeholder="Nhập câu trả lời của em..."></textarea>
+            <div class="feedback" id="fb-q16"></div>
+        </div>
+
+        <div class="submit-area">
+            <button type="button" class="btn-submit" id="submit-btn" onclick="gradeQuiz()">NỘP BÀI VÀ XEM ĐIỂM</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Dữ liệu Phần I
+    const part1Questions = [
+        {
+            id: "q1",
+            text: "Âm thanh được tạo ra do:",
+            options: { A: "Vật chuyển động tịnh tiến.", B: "Vật dao động.", C: "Vật đổi màu sắc.", D: "Vật nóng lên." },
+            answer: "B",
+            explain: "Mọi nguồn âm đều dao động khi phát ra âm thanh."
+        },
+        {
+            id: "q2",
+            text: "Khi gảy dây đàn guitar, bộ phận nào trực tiếp dao động phát ra âm?",
+            options: { A: "Thân đàn.", B: "Dây đàn.", C: "Cần đàn.", D: "Khóa đàn." },
+            answer: "B",
+            explain: "Dây đàn dao động trực tiếp tạo ra sóng âm; hộp đàn có tác dụng khuếch đại âm."
+        },
+        {
+            id: "q3",
+            text: "Âm thanh có thể truyền qua những môi trường nào dưới đây?",
+            options: {
+                A: "Chỉ truyền qua chất rắn.",
+                B: "Chỉ truyền qua chất lỏng và chất khí.",
+                C: "Truyền qua chất rắn, chất lỏng và chất khí (không truyền được trong chân không).",
+                D: "Truyền được trong cả chân không và các môi trường vật chất."
+            },
+            answer: "C",
+            explain: "Sóng âm cần môi trường vật chất để lan truyền nên không truyền qua chân không."
+        },
+        {
+            id: "q4",
+            text: "Trong các môi trường sau, âm thanh truyền nhanh nhất trong môi trường nào (ở điều kiện thường)?",
+            options: { A: "Không khí.", B: "Nước.", C: "Thép.", D: "Chân không." },
+            answer: "C",
+            explain: "Tốc độ truyền âm: Chất rắn (thép) > Chất lỏng (nước) > Chất khí (không khí)."
+        },
+        {
+            id: "q5",
+            text: "Tần số dao động là:",
+            options: {
+                A: "Số dao động thực hiện được trong 1 phút.",
+                B: "Số dao động thực hiện được trong 1 giây.",
+                C: "Thời gian để vật thực hiện một dao động.",
+                D: "Quãng đường âm truyền được trong 1 giây."
+            },
+            answer: "B",
+            explain: "Tần số là số dao động vật thực hiện được trong 1 giây."
+        },
+        {
+            id: "q6",
+            text: "Đơn vị của tần số là:",
+            options: { A: "Giây (s).", B: "Mét (m).", C: "Héc (Hz).", D: "Đề-xi-ben (dB)." },
+            answer: "C",
+            explain: "Đơn vị đo tần số là Héc, kí hiệu Hz."
+        },
+        {
+            id: "q7",
+            text: "Vật dao động càng nhanh thì:",
+            options: {
+                A: "Tần số càng nhỏ và âm phát ra càng trầm.",
+                B: "Tần số càng lớn và âm phát ra càng bổng.",
+                C: "Tần số càng lớn và âm phát ra càng trầm.",
+                D: "Tần số càng nhỏ và âm phát ra càng bổng."
+            },
+            answer: "B",
+            explain: "Dao động càng nhanh → tần số càng lớn → âm phát ra càng cao (bổng)."
+        },
+        {
+            id: "q8",
+            text: "Tai người bình thường có thể nghe được âm thanh có tần số nằm trong khoảng nào?",
+            options: { A: "Dưới 20 Hz.", B: "Từ 20 Hz đến 20 000 Hz.", C: "Trên 20 000 Hz.", D: "Từ 0 Hz đến 100 Hz." },
+            answer: "B",
+            explain: "Ngưỡng nghe của tai người từ 20 Hz đến 20 000 Hz."
+        },
+        {
+            id: "q9",
+            text: "Độ to của âm phụ thuộc vào yếu tố nào sau đây?",
+            options: { A: "Tần số dao động.", B: "Biên độ dao động.", C: "Môi trường truyền âm.", D: "Nhiệt độ môi trường." },
+            answer: "B",
+            explain: "Biên độ dao động càng lớn thì âm phát ra càng to."
+        },
+        {
+            id: "q10",
+            text: "Tiếng ồn gây ô nhiễm tiếng ồn thường có đặc điểm nào?",
+            options: {
+                A: "Âm thanh rất nhỏ, êm dịu.",
+                B: "Âm thanh kéo dài, to và gây khó chịu, ảnh hưởng xấu đến sức khỏe.",
+                C: "Âm thanh có tần số lớn hơn 20 000 Hz.",
+                D: "Âm thanh chỉ xuất hiện vào ban đêm."
+            },
+            answer: "B",
+            explain: "Ô nhiễm tiếng ồn xảy ra khi tiếng ồn to và kéo dài, gây ảnh hưởng xấu tới sức khỏe và sinh hoạt."
+        }
+    ];
+
+    // Dữ liệu Phần II
+    const part2Questions = [
+        {
+            id: "q11",
+            num: 11,
+            context: "Khi một chiếc trống đang phát ra âm, nếu ta đặt tay lên mặt trống thì âm thanh sẽ tắt dần hoặc ngừng phát ra.",
+            statement: "Mặt trống ngừng dao động nên không còn nguồn âm.",
+            answer: "true",
+            explain: "Đúng. Tay giữ làm mặt trống ngừng dao động, do đó âm thanh tắt."
+        },
+        {
+            id: "q12",
+            num: 12,
+            context: "Một con muỗi vỗ cánh khoảng 600 lần trong 1 giây, còn một con ong vò vẽ vỗ cánh khoảng 150 lần trong 1 giây.",
+            statement: "Tiếng vỗ cánh của muỗi có tần số lớn hơn nên nghe bổng hơn tiếng vỗ cánh của ong.",
+            answer: "true",
+            explain: "Đúng. Tần số muỗi (600 Hz) lớn hơn ong (150 Hz) nên âm cao (bổng) hơn."
+        },
+        {
+            id: "q13",
+            num: 13,
+            context: "Khi gõ mạnh hơn vào một chiếc âm thoa, biên độ dao động của âm thoa tăng lên.",
+            statement: "Âm phát ra sẽ to hơn.",
+            answer: "true",
+            explain: "Đúng. Gõ mạnh làm biên độ dao động lớn hơn → âm nghe to hơn."
+        },
+        {
+            id: "q14",
+            num: 14,
+            context: "Các phi hành gia đi bộ ngoài không gian (môi trường chân không) có thể nói chuyện trực tiếp với nhau bình thường mà không cần thiết bị hỗ trợ.",
+            statement: "Sóng âm truyền tốt nhất trong chân không.",
+            answer: "false",
+            explain: "Sai. Chân không không có các hạt vật chất nên âm thanh không truyền được; phi hành gia phải dùng bộ đàm sóng vô tuyến."
+        }
+    ];
+
+    // Render Phần I
+    const p1Container = document.getElementById("part1-container");
+    part1Questions.forEach((q, idx) => {
+        let optionsHtml = "";
+        for (const [key, val] of Object.entries(q.options)) {
+            optionsHtml += `
+                <label class="option-label">
+                    <input type="radio" name="${q.id}" value="${key}">
+                    <span><strong>${key}.</strong> ${val}</span>
+                </label>
+            `;
+        }
+        p1Container.innerHTML += `
+            <div class="question-card" id="card-${q.id}">
+                <div class="question-text"><span class="q-num">Câu ${idx + 1}:</span> ${q.text}</div>
+                <div class="options-list">${optionsHtml}</div>
+                <div class="feedback" id="fb-${q.id}"></div>
+            </div>
+        `;
+    });
+
+    // Render Phần II
+    const p2Container = document.getElementById("part2-container");
+    part2Questions.forEach(q => {
+        p2Container.innerHTML += `
+            <div class="question-card" id="card-${q.id}">
+                <div class="question-text"><span class="q-num">Câu ${q.num}:</span> ${q.context}</div>
+                <p style="margin-bottom: 12px; font-style: italic; color: #334155;">Nhận định: "${q.statement}"</p>
+                <div class="options-list tf-options">
+                    <label class="option-label">
+                        <input type="radio" name="${q.id}" value="true"> Đúng
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" name="${q.id}" value="false"> Sai
+                    </label>
+                </div>
+                <div class="feedback" id="fb-${q.id}"></div>
+            </div>
+        `;
+    });
+
+    // Bộ đếm thời gian 20 phút
+    let timeLeft = 20 * 60;
+    let isSubmitted = false;
+    const timeDisplay = document.getElementById("time-display");
+    const timerBox = document.getElementById("timer-box");
+
+    const timerInterval = setInterval(() => {
+        if (isSubmitted) {
+            clearInterval(timerInterval);
+            return;
+        }
+        timeLeft--;
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        timeDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+        if (timeLeft <= 120) {
+            timerBox.classList.add("warning");
+        }
+
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            alert("Đã hết thời gian làm bài 20 phút! Hệ thống sẽ tự động nộp bài.");
+            gradeQuiz();
+        }
+    }, 1000);
+
+    // Hàm chấm điểm
+    function gradeQuiz() {
+        if (isSubmitted) return;
+        isSubmitted = true;
+        clearInterval(timerInterval);
+
+        let scoreP1 = 0;
+        let scoreP2 = 0;
+        let scoreP3 = 0;
+
+        // Chấm Phần I (0.5đ / câu)
+        part1Questions.forEach(q => {
+            const selected = document.querySelector(`input[name="${q.id}"]:checked`);
+            const card = document.getElementById(`card-${q.id}`);
+            const fb = document.getElementById(`fb-${q.id}`);
+            fb.classList.add("show");
+
+            if (selected && selected.value === q.answer) {
+                scoreP1 += 0.5;
+                card.classList.add("correct");
+                fb.classList.add("ok");
+                fb.innerHTML = `✔ Chính xác! (+0,5đ) — ${q.explain}`;
+            } else {
+                card.classList.add("incorrect");
+                fb.classList.add("err");
+                fb.innerHTML = `✘ Chưa đúng. Đáp án đúng là <strong>${q.answer}</strong>. ${q.explain}`;
+            }
+        });
+
+        // Chấm Phần II (0.75đ / câu)
+        part2Questions.forEach(q => {
+            const selected = document.querySelector(`input[name="${q.id}"]:checked`);
+            const card = document.getElementById(`card-${q.id}`);
+            const fb = document.getElementById(`fb-${q.id}`);
+            fb.classList.add("show");
+
+            if (selected && selected.value === q.answer) {
+                scoreP2 += 0.75;
+                card.classList.add("correct");
+                fb.classList.add("ok");
+                fb.innerHTML = `✔ Chính xác! (+0,75đ) — ${q.explain}`;
+            } else {
+                card.classList.add("incorrect");
+                fb.classList.add("err");
+                fb.innerHTML = `✘ Chưa đúng. ${q.explain}`;
+            }
+        });
+
+        // Chấm Câu 15 (1.0đ)
+        const q15Val = parseFloat(document.getElementById("q15-input").value);
+        const card15 = document.getElementById("card-q15");
+        const fb15 = document.getElementById("fb-q15");
+        fb15.classList.add("show");
+
+        if (q15Val === 4) {
+            scoreP3 += 1.0;
+            card15.classList.add("correct");
+            fb15.classList.add("ok");
+            fb15.innerHTML = `✔ Chính xác! (+1,0đ) — Tần số dao động: f = 120 / 30 = 4 Hz.`;
+        } else {
+            card15.classList.add("incorrect");
+            fb15.classList.add("err");
+            fb15.innerHTML = `✘ Chưa đúng. Đáp án đúng là <strong>4 Hz</strong> (Công thức: f = n / t = 120 / 30 = 4 Hz).`;
+        }
+
+        // Chấm Câu 16 (Tự luận ngắn - chấm gợi ý theo từ khóa)
+        const q16Text = document.getElementById("q16-input").value.trim().toLowerCase();
+        const card16 = document.getElementById("card-q16");
+        const fb16 = document.getElementById("fb-q16");
+        fb16.classList.add("show");
+
+        const keywords = ["cây", "cửa", "cách âm", "nhỏ", "hạn chế", "loa", "tường", "rèm", "biển báo", "mũ", "bịt tai"];
+        let matchCount = 0;
+        keywords.forEach(kw => {
+            if (q16Text.includes(kw)) matchCount++;
+        });
+
+        if (q16Text.length >= 15 && matchCount >= 2) {
+            scoreP3 += 1.0;
+            card16.classList.add("correct");
+            fb16.classList.add("ok");
+            fb16.innerHTML = `✔ Đạt yêu cầu (+1,0đ). <em>Gợi ý đáp án chuẩn: Trồng nhiều cây xanh quanh nhà/trường học để phân tán âm; đóng kín cửa, làm tường cách âm; không mở loa/tivi quá to vào giờ nghỉ ngơi.</em>`;
+        } else if (q16Text.length > 0 && matchCount === 1) {
+            scoreP3 += 0.5;
+            card16.classList.add("correct");
+            fb16.classList.add("ok");
+            fb16.innerHTML = `✔ Đạt một phần (+0,5đ — mới nêu được 1 ý rõ ràng). <em>Gợi ý đáp án chuẩn: Trồng nhiều cây xanh; làm tường cách âm, đóng kín cửa; hạn chế mở loa/nhạc quá to.</em>`;
+        } else {
+            card16.classList.add("incorrect");
+            fb16.classList.add("err");
+            fb16.innerHTML = `✘ Chưa đạt (0đ). <em>Đáp án gợi ý: (1) Trồng nhiều cây xanh để phản xạ/phân tán âm; (2) Đóng kín cửa, sử dụng vật liệu cách âm hoặc không mở thiết bị âm thanh quá to.</em>`;
+        }
+
+        // Khóa toàn bộ input sau khi nộp
+        document.querySelectorAll("input, textarea").forEach(el => el.disabled = true);
+        const submitBtn = document.getElementById("submit-btn");
+        submitBtn.disabled = true;
+        submitBtn.textContent = "ĐÃ NỘP BÀI";
+
+        // Hiển thị bảng tổng kết
+        const total = (scoreP1 + scoreP2 + scoreP3).toFixed(2);
+        const sName = document.getElementById("student-name").value.trim() || "Học sinh";
+        const sClass = document.getElementById("student-class").value.trim() || "Chưa nhập lớp";
+
+        document.getElementById("student-result-info").textContent = `${sName} – Lớp: ${sClass}`;
+        document.getElementById("total-score").textContent = `${total} / 10 điểm`;
+        document.getElementById("score-breakdown").textContent =
+            `Phần I: ${scoreP1.toFixed(2)}đ | Phần II: ${scoreP2.toFixed(2)}đ | Phần III: ${scoreP3.toFixed(2)}đ`;
+
+        const resultPanel = document.getElementById("result-panel");
+        resultPanel.style.display = "block";
+        resultPanel.scrollIntoView({ behavior: "smooth" });
+    }
+</script>
+
+</body>
+</html>
